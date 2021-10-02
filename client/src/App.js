@@ -30,11 +30,6 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      console.log(
-        Object.keys(SimpleNFTContract),
-        await web3.eth.net.getId(),
-        SimpleNFTContract.networks
-      );
       const deployedNetwork = SimpleNFTContract.networks[networkId];
       const instance = new web3.eth.Contract(
         SimpleNFTContract.abi,
@@ -59,11 +54,21 @@ class App extends Component {
   runExample = async () => {
     const { contract, account } = this.state;
 
-    // Get the value from the contract to prove it worked.
-    const ipfsHash = await contract.methods.get().call();
-
-    // Update state with the result.
-    this.setState({ ipfsHash });
+    //* Get the value from the contract to prove it worked.
+    try {
+      const ipfsCheck = await this.state.contract.methods
+        .tokens(this.state.account)
+        .call();
+      if (ipfsCheck.isId) {
+        const ipfsHash = await contract.methods.tokenURI(ipfsCheck.id).call({
+          from: this.state.account,
+        });
+        //* Update state with the result.
+        this.setState({ ipfsHash });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   onChange(event) {
@@ -88,13 +93,27 @@ class App extends Component {
         return;
       }
       //* Saves it on blockchain
-      console.log(this.state.contract.methods);
-      await this.state.contract.methods.set(result[0].hash).send({
-        from: this.state.account,
-      });
-      this.setState({
-        ipfsHash: await this.state.contract.methods.get().call(),
-      });
+      const ipfsCheck = await this.state.contract.methods
+        .tokens(this.state.account)
+        .call();
+      if (!ipfsCheck.isId) {
+        await this.state.contract.methods
+          .mintTokenId(this.state.account, result[0].hash)
+          .send({
+            from: this.state.account,
+          });
+        if (ipfsCheck.isId) {
+          this.setState({
+            ipfsHash: await this.state.contract.methods
+              .tokenURI(ipfsCheck.id)
+              .call({
+                from: this.state.account,
+              }),
+          });
+        }
+      } else {
+        console.log("Something went wrong. Please refresh the page!");
+      }
       //* Saves it locally in current session
       // this.setState({ ipfsHash: result[0].hash });
     });
