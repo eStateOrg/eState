@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import SimpleNFTContract from "./contracts/SimpleNFT.json";
 import getWeb3 from "./getWeb3";
 import ipfs from "./ipfs";
 
@@ -30,9 +30,14 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = SimpleStorageContract.networks[networkId];
+      console.log(
+        Object.keys(SimpleNFTContract),
+        await web3.eth.net.getId(),
+        SimpleNFTContract.networks
+      );
+      const deployedNetwork = SimpleNFTContract.networks[networkId];
       const instance = new web3.eth.Contract(
-        SimpleStorageContract.abi,
+        SimpleNFTContract.abi,
         deployedNetwork.address
       );
 
