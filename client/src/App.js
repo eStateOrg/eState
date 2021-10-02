@@ -83,6 +83,7 @@ class App extends Component {
         return;
       }
       //* Saves it on blockchain
+      console.log(this.state.contract.methods);
       await this.state.contract.methods.set(result[0].hash).send({
         from: this.state.account,
       });
