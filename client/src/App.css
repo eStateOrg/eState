@@ -17,6 +17,29 @@
   color: white;
 }
 
+.App-navbar {
+  display: block;
+  text-align: right;
+  margin-right: 5px;
+}
+
 .App-link {
-  color: #09d3ac;
+  color: white;
+  margin-left: 5px;
+}
+
+.App-link-IPFS {
+  float: left;
+}
+
+.App-image {
+  border-radius: 3%;
+  max-width: 750px;
+  max-height: 750px;
+}
+
+.App-button {
+  background-color: #0d00a4;
+  color: #ffffff;
+  border-radius: 5%;
 }

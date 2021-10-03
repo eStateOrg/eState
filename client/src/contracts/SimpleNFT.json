@@ -18080,12 +18080,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0xE48eF7B7646Fe9F3D11E3863Af9A580B6F6ae8A7",
-      "transactionHash": "0xa1a8ba1915c233a0baac5d1ba30ed6deda5303fa4c530596082d9af5b3eca20c"
+      "address": "0x67253B8D300382134c9635Efa193E81b89690E6E",
+      "transactionHash": "0x7c09d2abf4ae0f51fe4ccf6970dc091e8850f2eae4e4ddcc8fc4c88eae594f38"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-10-02T18:24:41.784Z",
+  "updatedAt": "2021-10-03T15:12:14.251Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

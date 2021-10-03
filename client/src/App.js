@@ -15,6 +15,7 @@ class App extends Component {
       contract: null,
       buffer: null,
       account: null,
+      loading: true,
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -39,7 +40,13 @@ class App extends Component {
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState(
-        { web3, accounts, contract: instance, account: accounts[0] },
+        {
+          web3,
+          accounts,
+          contract: instance,
+          account: accounts[0],
+          loading: false,
+        },
         this.runExample
       );
     } catch (error) {
@@ -57,11 +64,11 @@ class App extends Component {
     //* Get the value from the contract to prove it worked.
     try {
       const ipfsCheck = await this.state.contract.methods
-        .tokens(this.state.account)
+        .tokens(account)
         .call();
       if (ipfsCheck.isId) {
         const ipfsHash = await contract.methods.tokenURI(ipfsCheck.id).call({
-          from: this.state.account,
+          from: account,
         });
         //* Update state with the result.
         this.setState({ ipfsHash });
@@ -102,17 +109,14 @@ class App extends Component {
           .send({
             from: this.state.account,
           });
-        if (ipfsCheck.isId) {
-          this.setState({
-            ipfsHash: await this.state.contract.methods
-              .tokenURI(ipfsCheck.id)
-              .call({
-                from: this.state.account,
-              }),
-          });
+        const newIpfsCheck = await this.state.contract.methods
+          .tokens(this.state.account)
+          .call();
+        if (newIpfsCheck.isId) {
+          this.runExample();
+        } else {
+          console.log("Something went wrong. Please refresh the page!");
         }
-      } else {
-        console.log("Something went wrong. Please refresh the page!");
       }
       //* Saves it locally in current session
       // this.setState({ ipfsHash: result[0].hash });
@@ -120,27 +124,49 @@ class App extends Component {
   }
 
   render() {
-    // if (!this.state.web3) {
-    //   return <div>Loading Web3, accounts, and contract...</div>;
-    // }
-    return (
-      <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-          <a href="#" className="pure-menu-heading pure-menu-link">
-            IPFS File Upload DApp
-          </a>
-        </nav>
-        <h1>Your Image</h1>
-        <p>This image is stored on IPFS & The Ethereum Blockchain!</p>
-        <h2>Smart Contract Example</h2>
-        <img src={`https://ipfs.io/ipfs/${this.state.ipfsHash}`} alt="" />
-        <h2>Upload Image</h2>
-        <form onSubmit={this.onSubmit}>
-          <input type="file" onChange={this.onChange} />
-          <input type="submit" />
-        </form>
-      </div>
-    );
+    if (!this.state.loading && this.state.account) {
+      return (
+        <div className="App">
+          <nav className="navbar pure-menu pure-menu-horizontal App-navbar">
+            <a
+              href="https://ipfs.io"
+              className="pure-menu-heading pure-menu-link App-link App-link-IPFS"
+            >
+              IPFS
+            </a>
+            {this.state.account}
+          </nav>
+          <h1>Your Image - Your Token</h1>
+          <img
+            src={`https://ipfs.io/ipfs/${this.state.ipfsHash}`}
+            alt=""
+            className="App-image"
+          />
+          {!this.state.ipfsHash.length ? (
+            <>
+              <h2>Upload Image</h2>
+              <form onSubmit={this.onSubmit}>
+                <input type="file" onChange={this.onChange} />
+                <button type="submit" className="App-button">
+                  Mint Token
+                </button>
+              </form>
+            </>
+          ) : (
+            <h1>This is your personal token!</h1>
+          )}
+        </div>
+      );
+    } else {
+      return !this.state.loading ? (
+        <h3 className="App">Loading...</h3>
+      ) : (
+        <h3 className="App">
+          Please connect to your ethereum account with MetaMask browser
+          extension
+        </h3>
+      );
+    }
   }
 }
 
