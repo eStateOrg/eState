@@ -1,3 +1,6 @@
+# If you are looking for sytime - distributed chat app - please go here: https://github.com/ThirdRockEngineering/Sytime
+## sorry, didn't update my CV properly :(
+
 # eState
 
 Distributed application with smart contract that exists only for one purpose: create NFT (ERC-721 standard) as a user's identificator.
